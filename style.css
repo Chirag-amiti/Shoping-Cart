@@ -10,9 +10,7 @@ body::-webkit-scrollbar {
 body {
     width: 100vw;
     height: 100vh;
-    /* margin: 0px; */
-    margin: 0;
-    padding: 0;
+    margin: 0px;
     display: flex;
     flex-direction: column;
 }
@@ -63,19 +61,35 @@ body {
     width: 96%;
     height: 25%;
     display: flex;
-    border: 1px solid black;
     margin-top: 2%;
     margin-left: 2%;
     margin-right: 2%;
   }
 
   .products {
+    margin-left: 1%;
+    margin-left: 1%;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
     width: 20%;
+    border-radius: 16px;
+  }
+
+  .addToCartBtn {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    margin-bottom: -4px;
+  }
+
+  .productPrice {
+    margin-top: 4px;
+  }
+  
+  .productName {
+    margin-top: 2px;
   }
 
   #cartSection {
@@ -89,8 +103,17 @@ body {
     z-index: 1000;
     padding: 20px;
     box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+    overflow-y: scroll;
   }
   
   #cartSection.open {
     right: 0;
   }
+
+.row .products:nth-child(odd) {
+  background-color: #e3f2fd; 
+}
+
+.row .products:nth-child(even) {
+  background-color: white;  
+}

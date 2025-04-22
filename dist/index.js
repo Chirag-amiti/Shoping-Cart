@@ -5,18 +5,12 @@ class Product {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.stock = 16;
+        this.stock = 15;
         this.isAvailable = true;
         this.quantity = 1;
     }
 }
 let cart = [];
-// export type CouponCode = "AMITI10" | "WELCOME15" | "CHIRAG25";
-// export const Coupons: Record<CouponCode, number> = {
-//   AMITI10: 10,
-//   WELCOME15: 15,
-//   CHIRAG25: 25,
-// };
 let appliedCoupon = null;
 const validCoupons = {
     'CHIRAG10': 0.10,
@@ -94,16 +88,6 @@ function renderCart() {
     });
     updateTotal();
 }
-// function updateTotal() {
-//   console.log("inn huu");
-//   const totalElement = document.getElementById('cartTotal')!;
-//   console.log(totalElement);
-//   const baseTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-//   console.log(baseTotal);
-//   const discount = appliedCoupon ? validCoupons[appliedCoupon] : 0;
-//   const finalTotal = baseTotal - baseTotal * discount;
-//   totalElement.textContent = finalTotal.toFixed(2);
-// }
 function updateTotal() {
     const totalElement = document.getElementById('cartTotal');
     // console.log(totalElement);
@@ -118,36 +102,12 @@ function updateTotal() {
     const finalTotal = baseTotal - baseTotal * discount;
     totalElement.textContent = finalTotal.toFixed(2);
 }
-// function updateTotal() {
-//   const totalElement = document.getElementById('cartTotal');
-//   if (!totalElement) {
-//     console.error("❌ cartTotal element not found");
-//     return;
-//   }
-//   console.log("🧾 Cart for total:", cart);
-//   const baseTotal = cart.reduce((sum, item) => {
-//     if (typeof item.price !== 'number' || isNaN(item.price)) {
-//       console.warn("⚠️ Invalid price in cart item:", item);
-//       return sum;
-//     }
-//     if (typeof item.quantity !== 'number' || isNaN(item.quantity)) {
-//       console.warn("⚠️ Invalid quantity in cart item:", item);
-//       return sum;
-//     }
-//     const itemTotal = item.price * item.quantity;
-//     console.log(`🧮 ${item.name}: ${item.price} × ${item.quantity} = ${itemTotal}`);
-//     return sum + itemTotal;
-//   }, 0);
-//   const discount = appliedCoupon ? validCoupons[appliedCoupon] : 0;
-//   const finalTotal = baseTotal - baseTotal * discount;
-//   console.log("💰 Final cart total after discount:", finalTotal);
-//   totalElement.textContent = finalTotal.toFixed(2);
-// }
 // Apply coupon button
 (_a = document.getElementById("applyCouponBtn")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
     const input = document.getElementById("couponInput");
     applyCoupon(input.value);
 });
+// Data fetch and object creation
 document.querySelectorAll('.addToCartBtn').forEach((button) => {
     button.addEventListener('click', () => {
         var _a, _b, _c, _d;
@@ -159,33 +119,31 @@ document.querySelectorAll('.addToCartBtn').forEach((button) => {
         const priceStr = ((_d = (_c = productDiv.querySelector('.productPrice')) === null || _c === void 0 ? void 0 : _c.textContent) === null || _d === void 0 ? void 0 : _d.trim()) || '0';
         const cleanedPrice = priceStr.replace(/[^\d.]/g, "");
         const price = parseFloat(cleanedPrice);
-        // const id = productDiv.getAttribute('data-id');
-        // if (!id) return; // or show a warning
         const existing = cart.find(p => p.id === id);
         if (existing) {
-            existing.quantity++;
+            if (existing.quantity < existing.stock) {
+                existing.quantity++;
+            }
+            else {
+                alert("🛑 Cannot add more. Product is out of stock.");
+                return;
+            }
         }
         else {
-            const product = new Product(id, name, price);
-            cart.push(product);
+            // Create new product and push to cart
+            const newProduct = new Product(id, name, price);
+            cart.push(newProduct);
         }
+        // if (existing) {
+        //   existing.quantity++;
+        // } else {
+        //   const product = new Product(id, name, price);
+        //   cart.push(product);
+        // }
         renderCart();
     });
 });
-// // Add event listeners to all buttons
-// document.querySelectorAll('.addToCartBtn').forEach((button) => {
-//   button.addEventListener('click', () => {
-//     // Get the parent .product div
-//     const productDiv = button.closest('.products');
-//     if (!productDiv) return;
-//     // Extract data from inside this product block
-//     const name = productDiv.querySelector('.productName')?.textContent?.trim() || '';
-//     const priceStr = productDiv.querySelector('.productPrice')?.textContent?.trim() || '0';
-//     const price = parseFloat(priceStr);
-//     const product = new Product(name, price);
-//     console.log('Added product:', product);
-//   });
-// });
+// cart toggle
 document.addEventListener("DOMContentLoaded", () => {
     const cartBtn = document.getElementById('showCartBtn');
     const cartSection = document.getElementById('cartSection');
