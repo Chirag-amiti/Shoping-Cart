@@ -21,6 +21,7 @@ body {
     display: flex;
     border: 1px solid black;
     background-color:rgb(3, 3, 65);
+    margin-bottom: 1%;
 }
 
 #header-text {
@@ -39,19 +40,37 @@ body {
     color: aliceblue;
   }
 
-
-
-
-/* body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+  #main {
+    width: 100%;
+    height: 88%;
+    display: flex;
+    flex-direction: column;
   }
-  /* .product, .cart-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
+
+  .row {
+    width: 96%;
+    height: 25%;
+    display: flex;
+    border: 1px solid black;
+    margin-top: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
   }
-  button {
-    margin-top: 10px;
-  } */ 
-  
+
+  .products {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    width: 20%;
+  }
+
+  #cart {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: aqua;
+    display: none;
+  }
