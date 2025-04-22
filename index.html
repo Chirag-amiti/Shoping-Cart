@@ -8,19 +8,19 @@
 <body>
     <div id="header">
         <h1 id="header-text">Product Page</h1>
-        <button class="cart-button">🛒 Cart</button>
+        <button id="showCartBtn">🛒 Cart</button>
     </div>
 
     <div id="main">
         <div class="row">
-            <div class="products">
-                <p>Prduct Name : Samsung S25</p>
-                <p>Price : 75000</p>
+            <div class="products" data-id="p101">
+                <p class="productName">Prduct Name : Samsung S25</p>
+                <p class="productPrice">Price : 75000</p>
                 <button class="addToCartBtn">Add to cart</button>
             </div>
-            <div class="products">
-                <p>Prduct Name : I pad Air 6</p>
-                <p>Price : 60000</p>
+            <div class="products" data-id="p102">
+                <p class="productName">Prduct Name : I Pad Air 6</p>
+                <p class="productPrice">Price : 60000</p>
                 <button class="addToCartBtn">Add to cart</button>
             </div>
             <div class="products">
@@ -96,25 +96,26 @@
             </div>
         </div>
 
-        <div id="cart">
-            <!-- Hidden cart section -->
-            <div id="cartSection"
-                style="display: none; padding: 20px; border: 1px solid #ddd; background: #f9f9f9; border-radius: 10px; max-width: 500px; margin: auto;">
-                <h2>🛒 Your Cart</h2>
-                <div id="cartContainer"></div>
-        
-                <div style="margin-top: 20px;">
-                    <input type="text" id="couponInput" placeholder="Enter coupon code" style="padding: 8px; width: 60%;">
-                    <button id="applyCouponBtn" style="padding: 8px 12px; margin-left: 10px;">Apply</button>
-                    <p id="couponMessage" style="color: green; margin-top: 8px;"></p>
-                </div>
-        
-                <h3 style="margin-top: 20px;">Total: $<span id="cartTotal">0.00</span></h3>
-            </div>
-        
-        </div>
+         
+
     </div>
 
-  <script src="dist/main.js"></script>
+    <!-- Hidden cart section -->
+ <div id="cartSection">
+    <h2>🛒 Your Cart</h2>
+    <div id="cartContainer"></div>
+
+    <div style="margin-top: 20px;">
+        <input type="text" id="couponInput" placeholder="Enter coupon code" style="padding: 8px; width: 60%;">
+        <button id="applyCouponBtn" style="padding: 8px 12px; margin-left: 10px;">Apply</button>
+        <p id="couponMessage" style="color: green; margin-top: 8px;"></p>
+    </div>
+
+    <h3 style="margin-top: 20px;">Total: <span id="cartTotal" data-value="0">0</span></h3>
+</div>
+
+<script type="module" src="./dist/index.js"></script>
+
 </body>
+
 </html>

@@ -16,36 +16,233 @@ class Product implements Product {
   quantity: number;
 
 
-  constructor(name: string, price: number) {
-    this.id = this.generateId();
+  constructor(id: string, name: string, price: number) {
+    this.id = id;
     this.name = name;
     this.price = price;
     this.stock = 16;
     this.isAvailable = true;
     this.quantity = 1;
   }
-
-  private generateId(): string {
-    return 'amiti-' + Math.floor(Math.random() * 10000);
-  }
 }
 
-// Add event listeners to all buttons
+let cart: Product[] = [];
+
+// export type CouponCode = "AMITI10" | "WELCOME15" | "CHIRAG25";
+
+// export const Coupons: Record<CouponCode, number> = {
+//   AMITI10: 10,
+//   WELCOME15: 15,
+//   CHIRAG25: 25,
+// };
+
+let appliedCoupon: string | null = null;
+
+const validCoupons: Record<string, number> = {
+  'CHIRAG10': 0.10,
+  'SAVE20': 0.20,
+};
+
+function addToCart(product: Product) {
+  const existing = cart.find(p => p.id === product.id);
+
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push(product);
+  }
+
+  renderCart();
+}
+
+function removeFromCart(productId: string) {
+  const index = cart.findIndex(p => p.id === productId);
+  if (index > -1) {
+    cart[index].quantity--;
+    if (cart[index].quantity <= 0) {
+      cart.splice(index, 1);
+    }
+  }
+
+  renderCart();
+}
+
+function applyCoupon(code: string) {
+  const discount = validCoupons[code.toUpperCase()];
+  const msgElem = document.getElementById("couponMessage")!;
+  
+  if (discount) {
+    appliedCoupon = code.toUpperCase();
+    msgElem.textContent = `Coupon "${appliedCoupon}" applied!`;
+    msgElem.style.color = "green";
+  } else {
+    appliedCoupon = null;
+    msgElem.textContent = `Invalid coupon code.`;
+    msgElem.style.color = "red";
+  }
+
+  renderCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cartContainer')!;
+  container.innerHTML = '';
+
+  cart.forEach(product => {
+    const div = document.createElement('div');
+    div.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    `;
+
+    div.innerHTML = `
+      <span><strong>${product.name}</strong> (x${product.quantity})</span>
+      <button class="removeBtn" data-id="${product.id}" style="
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      ">Remove</button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.querySelectorAll('.removeBtn').forEach(button => {
+    const id = (button as HTMLElement).getAttribute('data-id');
+    button.addEventListener('click', () => {
+      if (id) removeFromCart(id);
+    });
+  });
+
+  updateTotal();
+}
+
+// function updateTotal() {
+//   console.log("inn huu");
+//   const totalElement = document.getElementById('cartTotal')!;
+//   console.log(totalElement);
+//   const baseTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+//   console.log(baseTotal);
+//   const discount = appliedCoupon ? validCoupons[appliedCoupon] : 0;
+//   const finalTotal = baseTotal - baseTotal * discount;
+//   totalElement.textContent = finalTotal.toFixed(2);
+// }
+
+function updateTotal() {
+  const totalElement = document.getElementById('cartTotal')! as HTMLElement;
+  // console.log(totalElement);
+  const dataValue = totalElement.getAttribute('data-value');
+  // console.log(dataValue);
+  console.log(cart);
+  const baseTotal = cart.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+  console.log(baseTotal);
+
+  const discount = appliedCoupon ? validCoupons[appliedCoupon] : 0;
+  const finalTotal = baseTotal - baseTotal * discount;
+
+  totalElement.textContent = finalTotal.toFixed(2);
+}
+
+// function updateTotal() {
+//   const totalElement = document.getElementById('cartTotal');
+//   if (!totalElement) {
+//     console.error("❌ cartTotal element not found");
+//     return;
+//   }
+
+//   console.log("🧾 Cart for total:", cart);
+
+//   const baseTotal = cart.reduce((sum, item) => {
+//     if (typeof item.price !== 'number' || isNaN(item.price)) {
+//       console.warn("⚠️ Invalid price in cart item:", item);
+//       return sum;
+//     }
+//     if (typeof item.quantity !== 'number' || isNaN(item.quantity)) {
+//       console.warn("⚠️ Invalid quantity in cart item:", item);
+//       return sum;
+//     }
+
+//     const itemTotal = item.price * item.quantity;
+//     console.log(`🧮 ${item.name}: ${item.price} × ${item.quantity} = ${itemTotal}`);
+//     return sum + itemTotal;
+//   }, 0);
+
+//   const discount = appliedCoupon ? validCoupons[appliedCoupon] : 0;
+//   const finalTotal = baseTotal - baseTotal * discount;
+
+//   console.log("💰 Final cart total after discount:", finalTotal);
+
+//   totalElement.textContent = finalTotal.toFixed(2);
+// }
+
+
+// Apply coupon button
+document.getElementById("applyCouponBtn")?.addEventListener("click", () => {
+  const input = document.getElementById("couponInput") as HTMLInputElement;
+  applyCoupon(input.value);
+});
+
 document.querySelectorAll('.addToCartBtn').forEach((button) => {
   button.addEventListener('click', () => {
-    // Get the parent .product div
-    const productDiv = button.closest('.product');
+    const productDiv = button.closest('.products');
     if (!productDiv) return;
 
-    // Extract data from inside this product block
+    const id = productDiv.getAttribute('data-id') || '';
     const name = productDiv.querySelector('.productName')?.textContent?.trim() || '';
     const priceStr = productDiv.querySelector('.productPrice')?.textContent?.trim() || '0';
-    const price = parseFloat(priceStr);
+    const cleanedPrice = priceStr.replace(/[^\d.]/g, "");
+    const price = parseFloat(cleanedPrice);
+    const existing = cart.find(p => p.id === id);
 
-    const product = new Product(name, price);
-    console.log('Added product:', product);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      const product = new Product(id, name, price);
+      cart.push(product);
+    }
+
+    renderCart();
   });
 });
+
+
+// // Add event listeners to all buttons
+// document.querySelectorAll('.addToCartBtn').forEach((button) => {
+//   button.addEventListener('click', () => {
+//     // Get the parent .product div
+//     const productDiv = button.closest('.products');
+//     if (!productDiv) return;
+
+//     // Extract data from inside this product block
+//     const name = productDiv.querySelector('.productName')?.textContent?.trim() || '';
+//     const priceStr = productDiv.querySelector('.productPrice')?.textContent?.trim() || '0';
+//     const price = parseFloat(priceStr);
+
+//     const product = new Product(name, price);
+//     console.log('Added product:', product);
+//   });
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cartBtn = document.getElementById('showCartBtn');
+  const cartSection = document.getElementById('cartSection');
+
+  cartBtn?.addEventListener('click', () => {
+    cartSection?.classList.toggle('open');
+  });
+});
+
 
 
 
