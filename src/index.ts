@@ -37,7 +37,7 @@ const validCoupons: Record<string, number> = {
 
 function addToCart(product: Product) {
   const existing = cart.find(p => p.id === product.id);
-
+console.log("checking");
   if (existing) {
     existing.quantity++;
   } else {
