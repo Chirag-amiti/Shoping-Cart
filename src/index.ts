@@ -37,8 +37,9 @@ const validCoupons: Record<string, number> = {
 
 function addToCart(product: Product) {
   const existing = cart.find(p => p.id === product.id);
+  
   console.log("this is my commit !!");
-
+  
   if (existing) {
     existing.quantity++;
   } else {
